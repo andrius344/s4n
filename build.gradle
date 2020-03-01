@@ -1,0 +1,51 @@
+repositories {
+	mavenLocal()
+	jcenter()
+}
+
+buildscript {
+	repositories {
+		 mavenLocal()
+		 jcenter()
+	}
+	dependencies {
+		classpath("net.serenity-bdd:serenity-gradle-plugin:2.0.20")
+	}
+}
+
+allprojects {
+	apply plugin: 'java'
+	apply plugin: 'eclipse'
+	apply plugin: 'idea'
+	apply plugin: 'net.serenity-bdd.aggregator'
+	sourceCompatibility = 1.8
+	targetCompatibility = 1.8
+}
+
+ext {
+	serenityVersion = '2.1.8'
+	serenityCucumberVersion = '1.9.23'
+}
+
+dependencies {
+	implementation "net.serenity-bdd:serenity-screenplay:$rootProject.ext.serenityVersion"
+	implementation "net.serenity-bdd:serenity-screenplay-webdriver:$rootProject.ext.serenityVersion"
+	implementation "net.serenity-bdd:serenity-cucumber:$rootProject.ext.serenityCucumberVersion"
+	implementation group: 'org.assertj', name: 'assertj-core', version: '3.14.0'
+	testImplementation 'junit:junit:4.12'
+	testImplementation 'org.assertj:assertj-core:3.6.2'
+	testImplementation 'org.slf4j:slf4j-simple:1.7.7'
+	testImplementation "net.serenity-bdd:serenity-core:$rootProject.ext.serenityVersion"
+	testImplementation "net.serenity-bdd:serenity-junit:$rootProject.ext.serenityVersion"
+	compile 'org.apache.commons:commons-lang3:3.1'
+	compile fileTree(dir: 'libs', include: ['*.jar'])
+}
+
+tasks.withType(Test) {
+	systemProperty "file.encoding", "UTF-8"
+}
+tasks.withType(JavaCompile) {
+	options.encoding = 'iso-8859-1'
+}
+gradle.startParameter.continueOnFailure = true
+test.finalizedBy(aggregate)
